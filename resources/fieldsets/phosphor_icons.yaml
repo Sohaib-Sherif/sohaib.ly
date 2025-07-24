@@ -1,0 +1,8 @@
+title: 'Phosphor Icons'
+fields:
+  -
+    handle: icon
+    field:
+      directory: /resources/svg/phosphor_icons/SVGs
+      type: icon
+      display: Icon
