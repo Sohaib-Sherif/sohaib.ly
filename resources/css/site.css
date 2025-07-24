@@ -3,6 +3,9 @@
 @source "../views";
 @source "../../content";
 
+@plugin "daisyui" {
+    themes: 'ying'
+}
 
 @plugin "daisyui/theme" {
     name: "ying";
