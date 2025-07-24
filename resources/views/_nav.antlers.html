@@ -1,0 +1,10 @@
+<nav class="navbar justify-between gap-6">
+    <a class="size-12" href="/">
+        {{ partial:logo }}
+    </a>
+    {{ nav:main_nav }}
+        <a href="{{ url }}" class="text-base-content hover:text-primary transition-colors font-medium text-sm">
+            &bull; {{ title }}
+        </a>
+    {{ /nav:main_nav }}
+</nav>
