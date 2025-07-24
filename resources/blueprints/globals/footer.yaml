@@ -1,0 +1,15 @@
+tabs:
+  main:
+    display: Main
+    sections:
+      -
+        fields:
+          -
+            handle: flair
+            field:
+              placeholder: 'something like made with love lol and a year copyright maybe'
+              antlers: true
+              type: text
+              display: flair
+      -
+        display: 'New Section'

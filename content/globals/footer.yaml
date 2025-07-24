@@ -1,0 +1,3 @@
+title: Footer
+data:
+  flair: '© {{ now | format:Y }} - Made for a vague reason'

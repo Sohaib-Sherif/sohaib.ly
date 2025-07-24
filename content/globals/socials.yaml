@@ -1,0 +1,31 @@
+title: socials
+data:
+  links:
+    -
+      id: mdhjkp09
+      type: new_set
+      enabled: true
+      icon: github-logo
+      url: 'https://github.com/Sohaib-Sherif'
+      label: Github
+    -
+      id: mdhk3hsg
+      icon: linkedin-logo
+      url: 'https://linkedin.com/in/sohaib-sherif'
+      type: new_set
+      enabled: true
+      label: LinkedIn
+    -
+      id: mdhk8jbm
+      icon: envelope-simple
+      url: 'mailto:hello@sohaib.ly'
+      type: new_set
+      enabled: true
+      label: Email
+    -
+      id: mdhoapi9
+      icon: read-cv-logo
+      url: 'https://resume.sohaib.ly'
+      label: Resume
+      type: new_set
+      enabled: true
