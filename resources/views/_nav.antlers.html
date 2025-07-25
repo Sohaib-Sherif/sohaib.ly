@@ -1,10 +1,14 @@
-<nav class="navbar justify-between gap-6">
+<nav class="navbar gap-8">
     <a class="size-12" href="/">
         {{ partial:logo }}
     </a>
-    {{ nav:main_nav }}
-        <a href="{{ url }}" class="text-base-content hover:text-primary transition-colors font-medium text-sm">
+    <div>
+        {{ nav:main_nav }}
+        <a href="{{ url }}" 
+        class="{{if is_current }} bg-accent rounded-sm p-1 {{ /if }} ms-2 text-base-content hover:text-primary transition-colors font-medium text-sm"
+        >
             &bull; {{ title }}
         </a>
-    {{ /nav:main_nav }}
+        {{ /nav:main_nav }}
+    </div>
 </nav>
