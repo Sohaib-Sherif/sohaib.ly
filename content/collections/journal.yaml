@@ -1,7 +1,10 @@
 title: Journal
 template: journal/show
 layout: layout
+taxonomies:
+  - tags
 revisions: false
+route: 'journal/{slug}'
 date: true
 sort_dir: asc
 default_status: draft
