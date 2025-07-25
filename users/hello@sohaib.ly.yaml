@@ -3,3 +3,6 @@ id: 2bd13bce-19e9-41a3-a15f-a95f4d450e3b
 password_hash: $2y$12$GuHj9akqi.Yq1N.2DbM/W.9NgK/51aO.RmIkOb.Md.vB4Db6WyYWG
 preferences:
   theme: light
+  collections:
+    pages:
+      after_save: continue_editing
