@@ -5,7 +5,7 @@
     <div>
         {{ nav:main_nav }}
         <a href="{{ url }}" 
-        class="{{if is_current }} bg-accent rounded-sm p-1 {{ /if }} ms-2 text-base-content hover:text-primary transition-colors font-medium text-sm"
+        class="{{if is_current || is_parent }} bg-accent rounded-sm p-1 {{ /if }} ms-2 text-base-content hover:text-primary transition-colors font-medium text-sm"
         >
             &bull; {{ title }}
         </a>
