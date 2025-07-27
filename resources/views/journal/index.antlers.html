@@ -1,0 +1,23 @@
+<header class="prose mb-8">
+    {{ content }}
+    {{# <h1 class="text-3xl font-bold text-base-content mb-2">Journal</h1> #}}
+    {{# <p class="text-base-content/70">Thoughts, ideas, and updates</p> #}}
+</header>
+
+<div class="space-y-4 ms-2 mb-8">
+    {{ collection:journal sort="date:desc" }}
+        <article class="flex border-b border-base-300 pb-2 last:border-b-0">
+            <div class="flex items-center gap-4 text-sm text-base-content/60 mb-2">
+                <time datetime="{{ date format="Y-m-d" }}">
+                    {{ date format="F j, Y" }}
+                </time>
+            </div>
+
+            <h3 class="link link-hover text-md font-semibold text-base-content mb-2 ms-4 transition-colors">
+                <a href="{{ url }}" class="">
+                    {{ title }}
+                </a>
+            </h3>
+        </article>
+    {{ /collection:journal }}
+</div>
