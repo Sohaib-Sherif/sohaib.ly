@@ -1,0 +1,74 @@
+<nav class="mb-8">
+    <a href="/journal" class="text-primary text-sm font-medium transition-colors">
+        ← Back to the Journal
+    </a>
+</nav>
+
+
+{{tags}}
+    <a class="badge badge-info" href="{{ url }}">#{{title}}</a>
+{{ /tags}}
+
+<article class="prose prose-lg max-w-none">
+    <header class="mb-8 not-prose">
+        <div class="flex items-center gap-1 text-sm text-base-content/60 mb-4">
+            <time datetime="{{ date format="Y-m-d" }}">
+                {{ date format="F j, Y" }}
+            </time>
+            <p>- {{ rich_content | read_time }} min reading time</p>
+        </div>
+        
+        <h1 class="text-3xl font-bold text-base-content leading-tight mb-2">
+            {{ title }}
+        </h1>
+
+        {{ if featured_image }}
+            {{ glide src="{{featured_image}}" fit="contain" format="webp" }}
+                <div class="aspect-6/5 lg:aspect-video bg-black py-4 md:py-8 border-2">
+                    <img class="size-full" src="{{url}}">
+                </div>
+            {{ /glide }}
+        {{ /if }}
+    </header>
+
+
+    <div class="text-base-content/90 leading-relaxed">
+        {{ rich_content }}
+    </div>
+</article>
+
+<footer class="mt-12 pt-8 border-t border-base-300">
+    <nav class="flex justify-between items-start">
+        {{ collection:previous as="posts" limit="1"}}
+            {{ if no_results }}
+                <div></div>
+            {{ /if }}
+            {{ posts }}
+                <a href="{{ url }}" class="w-1/2 text-primary text-sm transition-colors">
+                    <p class="font-medium">
+                        ← Previous
+                    </p>
+                    <p class="mt-2">
+                       {{ title }}
+                    </p>
+                </a>
+            {{ /posts }}
+        {{ /collection:previous }}
+
+        {{ collection:next as="posts" limit="1"}}
+            {{ if no_results }}
+                <div></div>
+            {{ /if }}
+            {{ posts }}
+                <a href="{{ url }}" class="w-1/2 text-primary text-sm transition-colors text-right">
+                    <p class="font-medium">
+                        → Next
+                    </p>
+                    <p class="mt-2">
+                        {{ title }} 
+                    </p>
+                </a>
+            {{ /posts }}
+        {{ /collection:next }}
+    </nav>
+</footer>
