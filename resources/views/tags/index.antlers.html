@@ -1,0 +1,28 @@
+<header class="prose mb-8">
+    <h1 class="text-3xl font-bold text-base-content mb-2">Tags</h1>
+    <p class="text-base-content/70">These are all the tags used entries of the Journal</p>
+</header>
+
+<div class="space-y-4 ms-2 mb-8">
+    <div class="flex flex-wrap gap-4">
+        {{ taxonomy:tags }}
+            <a class="badge badge-soft badge-primary" href="/tags/{{slug}}">
+                #{{title}}
+                <small>{{entries_count}}</small>
+            </a>
+            {{# <article class="flex border-b border-base-300 pb-2 last:border-b-0">
+                <div class="flex items-center gap-4 text-sm text-base-content/60 mb-2">
+                    <span class="badge badge-outline">
+                        {{ entries_count }} {{ entries_count == 1 ? 'entry' : 'entries' }}
+                    </span>
+                </div>
+                
+                <h3 class="link link-hover text-md font-semibold text-base-content mb-2 ms-4 transition-colors">
+                    <a href="{{ url }}" class="">
+                        #{{ title }}
+                    </a>
+                </h3>
+            </article> #}}
+        {{ /taxonomy:tags }}
+    </div>
+</div>
