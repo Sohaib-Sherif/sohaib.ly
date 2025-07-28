@@ -7,13 +7,13 @@
 <div class="space-y-4 ms-2 mb-8">
     {{ collection:journal sort="date:desc" }}
         <article class="flex border-b border-base-300 pb-2 last:border-b-0">
-            <div class="flex items-center gap-4 text-sm text-base-content/60 mb-2">
+            <div class="w-1/2 md:w-auto flex items-center gap-4 text-sm text-base-content/60 mb-2">
                 <time datetime="{{ date format="Y-m-d" }}">
                     {{ date format="F j, Y" }}
                 </time>
             </div>
 
-            <h3 class="link link-hover text-md font-semibold text-base-content mb-2 ms-4 transition-colors">
+            <h3 class="w-1/2 md:w-auto link link-hover text-md font-semibold text-base-content mb-2 ms-4 transition-colors">
                 <a href="{{ url }}" class="">
                     {{ title }}
                 </a>
