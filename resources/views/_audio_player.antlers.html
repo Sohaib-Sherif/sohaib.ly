@@ -1,0 +1,72 @@
+{{ if youtube_url && show_audio_player }}
+<div class="audio-player-container mb-6 p-4 border-2 border-base-300 bg-base-200 rounded-lg" data-youtube-url="{{ youtube_url }}" data-track-title="{{ audio_title }}">
+    <!-- Hidden YouTube iframe -->
+    <div class="youtube-player sr-only"></div>
+    
+    <!-- Custom Audio Player UI -->
+    <div class="flex items-center gap-4">
+        <!-- Play/Pause Button -->
+        <button class="play-pause-btn btn btn-circle btn-primary" aria-label="Play/Pause">
+            <svg class="play-icon w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+            </svg>
+            <svg class="pause-icon w-6 h-6 hidden" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+        </button>
+        
+        <!-- Track Info and Progress -->
+        <div class="flex-1">
+            <!-- Track Title -->
+            <div class="text-sm font-medium text-base-content mb-1">
+                <span class="track-title">{{ audio_title ? audio_title : 'Loading...' }}</span>
+            </div>
+            
+            <!-- Progress Bar and Time -->
+            <div class="flex items-center gap-3">
+                <span class="current-time text-xs text-base-content/60 min-w-[35px]">0:00</span>
+                
+                <div class="flex-1 relative">
+                    <progress class="progress-bar progress progress-primary w-full h-2" value="0" max="100"></progress>
+                    <input 
+                        type="range" 
+                        class="seek-bar range range-xs range-primary absolute inset-0 w-full opacity-0 cursor-pointer" 
+                        min="0" 
+                        max="100" 
+                        value="0"
+                        aria-label="Seek"
+                    >
+                </div>
+                
+                <span class="duration text-xs text-base-content/60 min-w-[35px]">0:00</span>
+            </div>
+        </div>
+        
+        <!-- Volume Control -->
+        <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-base-content/60" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+            </svg>
+            <input 
+                type="range" 
+                class="volume-control range range-xs range-primary w-16" 
+                min="0" 
+                max="100" 
+                value="70"
+                aria-label="Volume"
+            >
+        </div>
+    </div>
+    
+    <!-- Loading State -->
+    <div class="loading-state text-center py-2">
+        <span class="loading loading-spinner loading-sm"></span>
+        <span class="text-sm text-base-content/60 ml-2">Loading audio...</span>
+    </div>
+    
+    <!-- Error State -->
+    <div class="error-state hidden text-center py-2">
+        <span class="text-sm text-error">Unable to load audio. Please check the YouTube URL.</span>
+    </div>
+</div>
+{{ /if }}

@@ -1,0 +1,27 @@
+title: 'Audio Player'
+fields:
+  -
+    handle: youtube_url
+    field:
+      type: text
+      display: 'YouTube URL'
+      instructions: 'Enter a YouTube video URL to use as background audio for this content'
+      placeholder: 'https://www.youtube.com/watch?v=...'
+      validate:
+        - 'regex:/^https?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]+/'
+      width: 66
+  -
+    handle: audio_title
+    field:
+      type: text
+      display: 'Audio Title'
+      instructions: 'Optional: Override the track title (defaults to YouTube video title)'
+      placeholder: 'Custom track title...'
+      width: 34
+  -
+    handle: show_audio_player
+    field:
+      type: toggle
+      display: 'Show Audio Player'
+      instructions: 'Toggle to show/hide the audio player on this content'
+      width: 50

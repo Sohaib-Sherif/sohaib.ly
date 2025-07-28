@@ -30,6 +30,8 @@ tabs:
               localizable: true
               antlers: true
           -
+            import: audio_player
+          -
             handle: template
             field:
               type: template

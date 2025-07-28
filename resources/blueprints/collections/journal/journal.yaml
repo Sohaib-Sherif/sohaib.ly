@@ -71,6 +71,8 @@ tabs:
               validate:
                 - required
           -
+            import: audio_player
+          -
             handle: template
             field:
               type: template
