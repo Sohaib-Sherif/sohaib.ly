@@ -1,36 +1,138 @@
 {{ if youtube_url && show_audio_player }}
-<div class="audio-player-container mb-6 p-4 border-2 bg-base-200 rounded-sm" data-youtube-url="{{ youtube_url }}" data-track-title="{{ audio_title }}">
+<div class="audio-player-container fixed bottom-0 left-0 right-0 bg-base-200/95 backdrop-blur-sm border-t-2 border-base-300 hidden transition-all duration-300 ease-in-out z-50" data-youtube-url="{{ youtube_url }}" data-track-title="{{ audio_title }}">
     <!-- Hidden YouTube iframe -->
     <div class="youtube-player sr-only"></div>
     
-    <!-- Custom Audio Player UI -->
-    <div class="flex items-center gap-4">
-        <!-- Play/Pause Button -->
-        <button class="play-pause-btn btn btn-circle btn-primary" aria-label="Play/Pause">
-            <svg class="play-icon w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z"/>
-            </svg>
-            <svg class="pause-icon w-6 h-6 hidden" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-            </svg>
-        </button>
-        
-        <!-- Track Info and Progress -->
-        <div class="flex-1">
-            <!-- Track Title -->
-            <div class="text-sm font-medium text-base-content mb-1">
-                <span class="track-title">{{ audio_title ? audio_title : 'Loading...' }}</span>
+    <!-- Compact Audio Player UI -->
+    <div class="audio-player-content px-4 py-3">
+        <!-- Mobile Collapsed State -->
+        <div class="mobile-collapsed-state flex items-center justify-between md:hidden">
+            <div class="flex items-center gap-3 flex-1 min-w-0">
+                <!-- Play/Pause Button -->
+                <button class="play-pause-btn btn btn-circle btn-sm btn-primary flex-shrink-0" aria-label="Play/Pause">
+                    <svg class="play-icon w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    <svg class="pause-icon w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                    </svg>
+                </button>
+                
+                <!-- Track Info (Minimal) -->
+                <div class="flex-1 min-w-0">
+                    <div class="track-title text-sm font-medium text-base-content truncate">
+                        {{ audio_title ? audio_title : 'Loading...' }}
+                    </div>
+                </div>
             </div>
             
+            <!-- Mobile Controls -->
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <!-- YouTube Link Button -->
+                <button class="youtube-link-btn btn btn-ghost btn-sm btn-circle" aria-label="Open in YouTube" title="Open in YouTube">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                        <path d="M6 6h2v12H6z"/>
+                    </svg>
+                </button>
+                
+                <!-- Expand Button -->
+                <button class="mobile-expand-btn btn btn-ghost btn-sm btn-circle" aria-label="Expand player">
+                    <svg class="expand-icon w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                    </svg>
+                    <svg class="collapse-icon w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Desktop/Expanded Mobile State -->
+        <div class="desktop-expanded-state hidden md:flex">
+            <div class="flex items-center gap-4 w-full">
+                <!-- Play/Pause Button -->
+                <button class="play-pause-btn btn btn-circle btn-sm btn-primary flex-shrink-0" aria-label="Play/Pause">
+                    <svg class="play-icon w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    <svg class="pause-icon w-5 h-5 hidden" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                    </svg>
+                </button>
+                
+                <!-- Track Info and Progress -->
+                <div class="flex-1 min-w-0">
+                    <!-- Track Title -->
+                    <div class="track-title text-sm font-medium text-base-content mb-1 truncate">
+                        {{ audio_title ? audio_title : 'Loading...' }}
+                    </div>
+                    
+                    <!-- Progress Bar and Time -->
+                    <div class="flex items-center gap-3">
+                        <span class="current-time text-xs text-base-content/60 min-w-[35px] flex-shrink-0">0:00</span>
+                        
+                        <div class="flex-1 relative min-w-0">
+                            <!-- Buffer Progress Bar (behind) -->
+                            <div class="buffer-progress-bar absolute inset-0 bg-base-300 rounded-full h-2"></div>
+                            <div class="buffer-fill absolute left-0 top-0 bg-base-content/20 rounded-full h-2 transition-all duration-300" style="width: 0%"></div>
+                            
+                            <!-- Playback Progress Bar (front) -->
+                            <progress class="progress-bar progress progress-primary w-full h-2 relative z-10" value="0" max="100"></progress>
+                            <input 
+                                type="range" 
+                                class="seek-bar range range-xs range-primary absolute inset-0 w-full opacity-0 cursor-pointer z-20" 
+                                min="0" 
+                                max="100" 
+                                value="0"
+                                aria-label="Seek"
+                            >
+                        </div>
+                        
+                        <span class="duration text-xs text-base-content/60 min-w-[35px] flex-shrink-0">0:00</span>
+                    </div>
+                </div>
+                
+                <!-- YouTube Link Button -->
+                <button class="youtube-link-btn btn btn-ghost btn-sm btn-circle flex-shrink-0" aria-label="Open in YouTube" title="Open in YouTube">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                    </svg>
+                </button>
+                
+                <!-- Volume Control -->
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <svg class="w-4 h-4 text-base-content/60" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                    </svg>
+                    <input 
+                        type="range" 
+                        class="volume-control range range-xs range-primary w-16" 
+                        min="0" 
+                        max="100" 
+                        value="70"
+                        aria-label="Volume"
+                    >
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Expanded State (Hidden by default) -->
+        <div class="mobile-expanded-state hidden md:hidden mt-3">
             <!-- Progress Bar and Time -->
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 mb-3">
                 <span class="current-time text-xs text-base-content/60 min-w-[35px]">0:00</span>
                 
                 <div class="flex-1 relative">
-                    <progress class="progress-bar progress progress-primary w-full h-2" value="0" max="100"></progress>
+                    <!-- Buffer Progress Bar (behind) -->
+                    <div class="buffer-progress-bar absolute inset-0 bg-base-300 rounded-full h-2"></div>
+                    <div class="buffer-fill absolute left-0 top-0 bg-base-content/20 rounded-full h-2 transition-all duration-300" style="width: 0%"></div>
+                    
+                    <!-- Playback Progress Bar (front) -->
+                    <progress class="progress-bar progress progress-primary w-full h-2 relative z-10" value="0" max="100"></progress>
                     <input 
                         type="range" 
-                        class="seek-bar range range-xs range-primary absolute inset-0 w-full opacity-0 cursor-pointer" 
+                        class="seek-bar range range-xs range-primary absolute inset-0 w-full opacity-0 cursor-pointer z-20" 
                         min="0" 
                         max="100" 
                         value="0"
@@ -40,32 +142,34 @@
                 
                 <span class="duration text-xs text-base-content/60 min-w-[35px]">0:00</span>
             </div>
-        </div>
-        
-        <!-- Volume Control -->
-        <div class="flex items-center gap-2">
-            <svg class="w-4 h-4 text-base-content/60" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-            </svg>
-            <input 
-                type="range" 
-                class="volume-control range range-xs range-primary w-16" 
-                min="0" 
-                max="100" 
-                value="70"
-                aria-label="Volume"
-            >
+            
+            <!-- Volume Control -->
+            <div class="flex items-center gap-3">
+                <svg class="w-4 h-4 text-base-content/60" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                </svg>
+                <input 
+                    type="range" 
+                    class="volume-control range range-xs range-primary flex-1" 
+                    min="0" 
+                    max="100" 
+                    value="70"
+                    aria-label="Volume"
+                >
+            </div>
         </div>
     </div>
     
     <!-- Loading State -->
-    <div class="loading-state text-center py-2">
-        <span class="loading loading-spinner loading-sm"></span>
-        <span class="text-sm text-base-content/60 ml-2">Loading audio...</span>
+    <div class="loading-state absolute inset-0 flex items-center justify-center bg-base-200/95 backdrop-blur-sm">
+        <div class="flex items-center gap-2">
+            <span class="loading loading-spinner loading-sm"></span>
+            <span class="text-sm text-base-content/60">Loading audio...</span>
+        </div>
     </div>
     
     <!-- Error State -->
-    <div class="error-state hidden text-center py-2">
+    <div class="error-state absolute inset-0 hidden items-center justify-center bg-base-200/95 backdrop-blur-sm">
         <span class="text-sm text-error">Unable to load audio. Please check the YouTube URL.</span>
     </div>
 </div>

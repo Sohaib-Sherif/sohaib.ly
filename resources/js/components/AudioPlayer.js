@@ -8,34 +8,112 @@ class AudioPlayer {
         this.duration = 0;
         this.currentTime = 0;
         this.updateInterval = null;
+        this.isMobileExpanded = false;
         
         this.initializeElements();
         this.bindEvents();
-        this.loadYouTubeAPI();
+        this.setupPlayThemeButton();
     }
     
     initializeElements() {
-        // Get UI elements
-        this.playPauseBtn = this.container.querySelector('.play-pause-btn');
-        this.playIcon = this.container.querySelector('.play-icon');
-        this.pauseIcon = this.container.querySelector('.pause-icon');
-        this.trackTitle = this.container.querySelector('.track-title');
-        this.currentTimeEl = this.container.querySelector('.current-time');
-        this.durationEl = this.container.querySelector('.duration');
-        this.progressBar = this.container.querySelector('.progress-bar');
-        this.seekBar = this.container.querySelector('.seek-bar');
-        this.volumeControl = this.container.querySelector('.volume-control');
+        // Get UI elements for both mobile and desktop states
+        this.playPauseBtns = this.container.querySelectorAll('.play-pause-btn');
+        this.playIcons = this.container.querySelectorAll('.play-icon');
+        this.pauseIcons = this.container.querySelectorAll('.pause-icon');
+        this.trackTitles = this.container.querySelectorAll('.track-title');
+        this.currentTimeEls = this.container.querySelectorAll('.current-time');
+        this.durationEls = this.container.querySelectorAll('.duration');
+        this.progressBars = this.container.querySelectorAll('.progress-bar');
+        this.seekBars = this.container.querySelectorAll('.seek-bar');
+        this.volumeControls = this.container.querySelectorAll('.volume-control');
+        this.bufferFills = this.container.querySelectorAll('.buffer-fill');
+        this.youtubeLinkBtns = this.container.querySelectorAll('.youtube-link-btn');
+        this.mobileExpandBtn = this.container.querySelector('.mobile-expand-btn');
+        this.expandIcon = this.container.querySelector('.expand-icon');
+        this.collapseIcon = this.container.querySelector('.collapse-icon');
         this.loadingState = this.container.querySelector('.loading-state');
         this.errorState = this.container.querySelector('.error-state');
         
-        // Initially hide the player controls
-        this.hideControls();
+        // Initially hide the player
+        this.hidePlayer();
     }
     
     bindEvents() {
-        this.playPauseBtn.addEventListener('click', () => this.togglePlayPause());
-        this.seekBar.addEventListener('input', (e) => this.seek(e.target.value));
-        this.volumeControl.addEventListener('input', (e) => this.setVolume(e.target.value));
+        // Bind events to all play/pause buttons (mobile and desktop)
+        this.playPauseBtns.forEach(btn => {
+            btn.addEventListener('click', () => this.togglePlayPause());
+        });
+        
+        // Bind events to all seek bars
+        this.seekBars.forEach(bar => {
+            bar.addEventListener('input', (e) => this.seek(e.target.value));
+        });
+        
+        // Bind events to all volume controls
+        this.volumeControls.forEach(control => {
+            control.addEventListener('input', (e) => this.setVolume(e.target.value));
+        });
+        
+        // Bind YouTube link buttons
+        this.youtubeLinkBtns.forEach(btn => {
+            btn.addEventListener('click', () => this.openInYouTube());
+        });
+        
+        // Bind mobile expand/collapse button
+        if (this.mobileExpandBtn) {
+            this.mobileExpandBtn.addEventListener('click', () => this.toggleMobileExpand());
+        }
+    }
+    
+    setupPlayThemeButton() {
+        // Find and bind the "Play Theme" button
+        this.playThemeBtn = document.getElementById('play-theme-btn');
+        if (this.playThemeBtn) {
+            this.playThemeBtn.addEventListener('click', () => this.onPlayThemeClick());
+        }
+    }
+    
+    onPlayThemeClick() {
+        // Add loading state to button
+        this.playThemeBtn.classList.add('loading');
+        this.playThemeBtn.querySelector('.play-theme-text').textContent = 'Loading';
+        
+        // Show the player with animation
+        this.showPlayer();
+        
+        // Initialize the YouTube player
+        this.loadYouTubeAPI();
+    }
+    
+    showPlayer() {
+        this.container.classList.remove('hidden');
+        // Use setTimeout to ensure the element is rendered before adding the show class
+        setTimeout(() => {
+            this.container.classList.add('show');
+        }, 10);
+    }
+    
+    hidePlayer() {
+        this.container.classList.remove('show');
+        setTimeout(() => {
+            this.container.classList.add('hidden');
+        }, 300); // Match the transition duration
+    }
+    
+    toggleMobileExpand() {
+        this.isMobileExpanded = !this.isMobileExpanded;
+        
+        if (this.isMobileExpanded) {
+            this.container.classList.add('mobile-expanded');
+        } else {
+            this.container.classList.remove('mobile-expanded');
+        }
+    }
+    
+    openInYouTube() {
+        if (this.youtubeUrl) {
+            window.open(this.youtubeUrl, '_blank', 'noopener,noreferrer');
+        }
     }
     
     loadYouTubeAPI() {
@@ -148,26 +226,18 @@ class AudioPlayer {
         
         try {
             this.duration = this.player.getDuration();
-            this.durationEl.textContent = this.formatTime(this.duration);
+            this.updateDurationDisplay();
             
             // Set custom title or get from YouTube
-            if (this.customTitle) {
-                this.trackTitle.textContent = this.customTitle;
-            } else {
-                // Try to get title from YouTube (this might not always work due to API limitations)
-                const videoData = this.player.getVideoData();
-                if (videoData && videoData.title) {
-                    this.trackTitle.textContent = videoData.title;
-                } else {
-                    this.trackTitle.textContent = 'YouTube Audio';
-                }
-            }
+            const title = this.customTitle || this.player.getVideoData()?.title || 'YouTube Audio';
+            this.updateTrackTitle(title);
             
             // Set initial volume
             this.player.setVolume(70);
             
             this.showControls();
             this.startProgressUpdate();
+            this.hidePlayThemeButton();
             
             console.log('Player initialization completed');
         } catch (error) {
@@ -179,10 +249,10 @@ class AudioPlayer {
     onPlayerStateChange(event) {
         if (event.data === YT.PlayerState.PLAYING) {
             this.isPlaying = true;
-            this.updatePlayPauseButton();
+            this.updatePlayPauseButtons();
         } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
             this.isPlaying = false;
-            this.updatePlayPauseButton();
+            this.updatePlayPauseButtons();
         }
     }
     
@@ -213,14 +283,27 @@ class AudioPlayer {
         this.player.setVolume(volume);
     }
     
-    updatePlayPauseButton() {
+    updatePlayPauseButtons() {
         if (this.isPlaying) {
-            this.playIcon.classList.add('hidden');
-            this.pauseIcon.classList.remove('hidden');
+            this.playIcons.forEach(icon => icon.classList.add('hidden'));
+            this.pauseIcons.forEach(icon => icon.classList.remove('hidden'));
         } else {
-            this.playIcon.classList.remove('hidden');
-            this.pauseIcon.classList.add('hidden');
+            this.playIcons.forEach(icon => icon.classList.remove('hidden'));
+            this.pauseIcons.forEach(icon => icon.classList.add('hidden'));
         }
+    }
+    
+    updateTrackTitle(title) {
+        this.trackTitles.forEach(el => {
+            el.textContent = title;
+        });
+    }
+    
+    updateDurationDisplay() {
+        const formattedDuration = this.formatTime(this.duration);
+        this.durationEls.forEach(el => {
+            el.textContent = formattedDuration;
+        });
     }
     
     startProgressUpdate() {
@@ -229,11 +312,41 @@ class AudioPlayer {
                 this.currentTime = this.player.getCurrentTime();
                 const percentage = (this.currentTime / this.duration) * 100;
                 
-                this.progressBar.value = percentage;
-                this.seekBar.value = percentage;
-                this.currentTimeEl.textContent = this.formatTime(this.currentTime);
+                // Update progress bars and seek bars
+                this.progressBars.forEach(bar => {
+                    bar.value = percentage;
+                });
+                this.seekBars.forEach(bar => {
+                    bar.value = percentage;
+                });
+                
+                // Update current time display
+                const formattedTime = this.formatTime(this.currentTime);
+                this.currentTimeEls.forEach(el => {
+                    el.textContent = formattedTime;
+                });
+                
+                // Update buffer progress
+                this.updateBufferProgress();
             }
         }, 1000);
+    }
+    
+    updateBufferProgress() {
+        if (!this.player || !this.duration) return;
+        
+        try {
+            // Get the buffered percentage from YouTube player
+            const bufferedPercentage = this.player.getVideoLoadedFraction() * 100;
+            
+            // Update all buffer fill elements
+            this.bufferFills.forEach(fill => {
+                fill.style.width = `${bufferedPercentage}%`;
+            });
+        } catch (error) {
+            // Silently handle buffer progress errors
+            console.debug('Buffer progress update error:', error);
+        }
     }
     
     formatTime(seconds) {
@@ -245,17 +358,24 @@ class AudioPlayer {
     showControls() {
         this.loadingState.classList.add('hidden');
         this.errorState.classList.add('hidden');
-        this.container.querySelector('.flex').classList.remove('hidden');
     }
     
-    hideControls() {
-        this.container.querySelector('.flex').classList.add('hidden');
+    hidePlayThemeButton() {
+        if (this.playThemeBtn) {
+            this.playThemeBtn.style.display = 'none';
+        }
     }
     
     showError() {
         this.loadingState.classList.add('hidden');
         this.errorState.classList.remove('hidden');
-        this.hideControls();
+        this.errorState.classList.add('flex');
+        
+        // Reset Play Theme button if error occurs
+        if (this.playThemeBtn) {
+            this.playThemeBtn.classList.remove('loading');
+            this.playThemeBtn.querySelector('.play-theme-text').textContent = 'Play Theme';
+        }
     }
     
     destroy() {
@@ -264,6 +384,11 @@ class AudioPlayer {
         }
         if (this.player) {
             this.player.destroy();
+        }
+        
+        // Clean up Play Theme button event listener
+        if (this.playThemeBtn) {
+            this.playThemeBtn.removeEventListener('click', this.onPlayThemeClick);
         }
     }
 }
