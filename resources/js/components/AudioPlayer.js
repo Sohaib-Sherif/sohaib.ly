@@ -29,6 +29,7 @@ class AudioPlayer {
         this.progressBars = this.container.querySelectorAll('.progress-bar');
         this.seekBars = this.container.querySelectorAll('.seek-bar');
         this.volumeControls = this.container.querySelectorAll('.volume-control');
+        this.bufferProgressBar = this.container.querySelectorAll('.buffer-progress-bar');
         this.bufferFills = this.container.querySelectorAll('.buffer-fill');
         this.youtubeLinkBtns = this.container.querySelectorAll('.youtube-link-btn');
         this.mobileExpandBtn = this.container.querySelector('.mobile-expand-btn');
@@ -406,6 +407,9 @@ class AudioPlayer {
         this.bufferFills.forEach(fill => {
             fill.classList.remove('hidden');
         });
+        this.bufferProgressBar.forEach(bar => {
+            bar.classList.remove('hidden');
+        })
     }
     
     showControls() {

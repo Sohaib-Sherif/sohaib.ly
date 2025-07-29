@@ -74,14 +74,14 @@
                         
                         <div class="flex-1 relative min-w-0">
                             <!-- Buffer Progress Bar (behind) -->
-                            <div class="buffer-progress-bar absolute inset-0 bg-base-300 rounded-full h-2"></div>
+                            <div class="buffer-progress-bar absolute inset-0 bg-base-300 rounded-full h-2 hidden"></div>
                             <div class="buffer-fill absolute left-0 top-0 bg-base-content/20 rounded-full h-2 transition-all duration-300 hidden" style="width: 0%"></div>
                             
                             <!-- Playback Progress Bar (front) -->
                             <progress class="progress-bar progress progress-primary w-full h-2 relative z-10" value="0" max="100"></progress>
                             <input 
                                 type="range" 
-                                class="seek-bar range range-xs range-primary absolute inset-0 w-full opacity-0 cursor-pointer z-20" 
+                                class="seek-bar range range-xs range-primary absolute inset-2 w-full opacity-0 cursor-pointer z-20" 
                                 min="0" 
                                 max="100" 
                                 value="0"
@@ -125,14 +125,14 @@
                 
                 <div class="flex-1 relative">
                     <!-- Buffer Progress Bar (behind) -->
-                    <div class="buffer-progress-bar absolute inset-0 bg-base-300 rounded-full h-2"></div>
+                    <div class="buffer-progress-bar absolute inset-0 bg-base-300 rounded-full h-2 hidden"></div>
                     <div class="buffer-fill absolute left-0 top-0 bg-base-content/20 rounded-full h-2 transition-all duration-300 hidden" style="width: 0%"></div>
                     
                     <!-- Playback Progress Bar (front) -->
                     <progress class="progress-bar progress progress-primary w-full h-2 relative z-10" value="0" max="100"></progress>
                     <input 
                         type="range" 
-                        class="seek-bar range range-xs range-primary absolute inset-0 w-full opacity-0 cursor-pointer z-20" 
+                        class="seek-bar range range-xs range-primary absolute inset-2 w-full opacity-0 cursor-pointer z-20" 
                         min="0" 
                         max="100" 
                         value="0"
