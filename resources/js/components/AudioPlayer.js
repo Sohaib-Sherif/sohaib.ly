@@ -12,10 +12,16 @@ class AudioPlayer {
         this.isInitialized = false;
         this.bufferIndicatorsShown = false;
         
+        // Resize handling properties
+        this.resizeHandler = null;
+        this.resizeTimeout = null;
+        this.currentBreakpoint = this.getCurrentBreakpoint();
+        
         this.initializeElements();
         this.bindEvents();
         this.setupPlayThemeButton();
         this.setupMainContainer();
+        this.setupResizeHandling();
     }
     
     initializeElements() {
@@ -80,6 +86,47 @@ class AudioPlayer {
     setupMainContainer() {
         // Get reference to main container for footer spacing
         this.mainContainer = document.querySelector('.main-container');
+    }
+    
+    getCurrentBreakpoint() {
+        return window.innerWidth >= 768 ? 'desktop' : 'mobile';
+    }
+    
+    setupResizeHandling() {
+        this.resizeHandler = this.handleResize.bind(this);
+        window.addEventListener('resize', this.resizeHandler);
+    }
+    
+    handleResize() {
+        // Clear existing timeout
+        if (this.resizeTimeout) {
+            clearTimeout(this.resizeTimeout);
+        }
+        
+        // Debounce resize handling
+        this.resizeTimeout = setTimeout(() => {
+            const newBreakpoint = this.getCurrentBreakpoint();
+            
+            // If transitioning from mobile to desktop, reset mobile expanded state
+            if (this.currentBreakpoint === 'mobile' && newBreakpoint === 'desktop') {
+                this.resetMobileExpandedState();
+            }
+            
+            this.currentBreakpoint = newBreakpoint;
+        }, 300);
+    }
+    
+    resetMobileExpandedState() {
+        if (this.isMobileExpanded) {
+            this.isMobileExpanded = false;
+            this.container.classList.remove('mobile-expanded');
+            
+            // Reset expand/collapse button icons
+            if (this.expandIcon && this.collapseIcon) {
+                this.expandIcon.classList.remove('hidden');
+                this.collapseIcon.classList.add('hidden');
+            }
+        }
     }
     
     onPlayThemeClick() {
@@ -466,6 +513,14 @@ class AudioPlayer {
         }
         if (this.player) {
             this.player.destroy();
+        }
+        
+        // Clean up resize handling
+        if (this.resizeHandler) {
+            window.removeEventListener('resize', this.resizeHandler);
+        }
+        if (this.resizeTimeout) {
+            clearTimeout(this.resizeTimeout);
         }
         
         // Clean up Play Theme button event listener
