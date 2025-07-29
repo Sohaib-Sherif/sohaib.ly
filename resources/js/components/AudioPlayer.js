@@ -9,10 +9,13 @@ class AudioPlayer {
         this.currentTime = 0;
         this.updateInterval = null;
         this.isMobileExpanded = false;
+        this.isInitialized = false;
+        this.bufferIndicatorsShown = false;
         
         this.initializeElements();
         this.bindEvents();
         this.setupPlayThemeButton();
+        this.setupMainContainer();
     }
     
     initializeElements() {
@@ -73,13 +76,34 @@ class AudioPlayer {
         }
     }
     
+    setupMainContainer() {
+        // Get reference to main container for footer spacing
+        this.mainContainer = document.querySelector('.main-container');
+    }
+    
     onPlayThemeClick() {
-        // Add loading state to button
-        this.playThemeBtn.classList.add('loading');
-        this.playThemeBtn.querySelector('.play-theme-text').textContent = 'Loading';
+        // Prevent multiple initializations
+        if (this.isInitialized) {
+            return;
+        }
+        
+        // Show DaisyUI loading state
+        const spinner = this.playThemeBtn.querySelector('.loading');
+        const icon = this.playThemeBtn.querySelector('.play-theme-icon');
+        const text = this.playThemeBtn.querySelector('.play-theme-text');
+        
+        spinner.classList.remove('hidden');
+        icon.classList.add('hidden');
+        text.textContent = 'Loading...';
+        
+        // Mark as initializing
+        this.isInitialized = true;
         
         // Show the player with animation
         this.showPlayer();
+        
+        // Add bottom padding to main container
+        this.addMainContainerPadding();
         
         // Initialize the YouTube player
         this.loadYouTubeAPI();
@@ -235,9 +259,11 @@ class AudioPlayer {
             // Set initial volume
             this.player.setVolume(70);
             
+            // DON'T show buffer indicators yet - wait until user starts playing
+            
             this.showControls();
             this.startProgressUpdate();
-            this.hidePlayThemeButton();
+            this.disablePlayThemeButton();
             
             console.log('Player initialization completed');
         } catch (error) {
@@ -250,6 +276,12 @@ class AudioPlayer {
         if (event.data === YT.PlayerState.PLAYING) {
             this.isPlaying = true;
             this.updatePlayPauseButtons();
+            
+            // Show buffer indicators only when user starts playing for the first time
+            if (!this.bufferIndicatorsShown) {
+                this.showBufferIndicators();
+                this.bufferIndicatorsShown = true;
+            }
         } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
             this.isPlaying = false;
             this.updatePlayPauseButtons();
@@ -355,14 +387,49 @@ class AudioPlayer {
         return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
     }
     
+    addMainContainerPadding() {
+        // Add CSS class to main container for footer spacing
+        if (this.mainContainer) {
+            this.mainContainer.classList.add('audio-player-active');
+        }
+    }
+    
+    removeMainContainerPadding() {
+        // Remove CSS class from main container
+        if (this.mainContainer) {
+            this.mainContainer.classList.remove('audio-player-active');
+        }
+    }
+    
+    showBufferIndicators() {
+        // Show buffer fill elements now that video is loading
+        this.bufferFills.forEach(fill => {
+            fill.classList.remove('hidden');
+        });
+    }
+    
     showControls() {
         this.loadingState.classList.add('hidden');
         this.errorState.classList.add('hidden');
     }
     
-    hidePlayThemeButton() {
+    disablePlayThemeButton() {
         if (this.playThemeBtn) {
-            this.playThemeBtn.style.display = 'none';
+            // Keep button visible but disabled to prevent multiple clicks
+            this.playThemeBtn.disabled = true;
+            this.playThemeBtn.classList.add('btn-disabled');
+            
+            // Update text to show it's been activated
+            const text = this.playThemeBtn.querySelector('.play-theme-text');
+            if (text) {
+                text.textContent = 'Player Active';
+                // hide loading indicator and make icon visible
+                const spinner = this.playThemeBtn.querySelector('.loading');
+                const icon = this.playThemeBtn.querySelector('.play-theme-icon');
+                spinner.classList.add('hidden');
+                icon.classList.remove('hidden');
+
+            }
         }
     }
     
@@ -371,10 +438,21 @@ class AudioPlayer {
         this.errorState.classList.remove('hidden');
         this.errorState.classList.add('flex');
         
+        // Remove main container padding
+        this.removeMainContainerPadding();
+        
         // Reset Play Theme button if error occurs
         if (this.playThemeBtn) {
-            this.playThemeBtn.classList.remove('loading');
-            this.playThemeBtn.querySelector('.play-theme-text').textContent = 'Play Theme';
+            const spinner = this.playThemeBtn.querySelector('.loading');
+            const icon = this.playThemeBtn.querySelector('.play-theme-icon');
+            const text = this.playThemeBtn.querySelector('.play-theme-text');
+            
+            spinner.classList.add('hidden');
+            icon.classList.remove('hidden');
+            text.textContent = 'Play Theme';
+            
+            // Reset initialization flag to allow retry
+            this.isInitialized = false;
         }
     }
     

@@ -167,28 +167,20 @@
     transform: translateY(-1px);
 }
 
-#play-theme-btn.loading {
-    pointer-events: none;
+/* Main container padding for audio player */
+.main-container {
+    transition: padding-bottom 0.3s ease;
 }
 
-#play-theme-btn.loading .play-theme-text::after {
-    content: "...";
-    animation: dots 1.5s infinite;
+.main-container.audio-player-active {
+    padding-bottom: 80px;
+    /* Adjust based on player height */
 }
 
-@keyframes dots {
-
-    0%,
-    20% {
-        opacity: 0;
-    }
-
-    50% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
+@media (max-width: 768px) {
+    .main-container.audio-player-active {
+        padding-bottom: 60px;
+        /* Smaller padding for mobile */
     }
 }
 

@@ -1,5 +1,5 @@
 {{ if youtube_url && show_audio_player }}
-<div class="audio-player-container fixed bottom-0 left-0 right-0 bg-base-200/95 backdrop-blur-sm border-t-2 border-base-300 hidden transition-all duration-300 ease-in-out z-50" data-youtube-url="{{ youtube_url }}" data-track-title="{{ audio_title }}">
+<div class="audio-player-container fixed bottom-0 left-0 right-0 bg-base-200/95 backdrop-blur-sm border-t-2 border-primary hidden transition-all duration-300 ease-in-out z-50" data-youtube-url="{{ youtube_url }}" data-track-title="{{ audio_title }}">
     <!-- Hidden YouTube iframe -->
     <div class="youtube-player sr-only"></div>
     
@@ -75,7 +75,7 @@
                         <div class="flex-1 relative min-w-0">
                             <!-- Buffer Progress Bar (behind) -->
                             <div class="buffer-progress-bar absolute inset-0 bg-base-300 rounded-full h-2"></div>
-                            <div class="buffer-fill absolute left-0 top-0 bg-base-content/20 rounded-full h-2 transition-all duration-300" style="width: 0%"></div>
+                            <div class="buffer-fill absolute left-0 top-0 bg-base-content/20 rounded-full h-2 transition-all duration-300 hidden" style="width: 0%"></div>
                             
                             <!-- Playback Progress Bar (front) -->
                             <progress class="progress-bar progress progress-primary w-full h-2 relative z-10" value="0" max="100"></progress>
@@ -126,7 +126,7 @@
                 <div class="flex-1 relative">
                     <!-- Buffer Progress Bar (behind) -->
                     <div class="buffer-progress-bar absolute inset-0 bg-base-300 rounded-full h-2"></div>
-                    <div class="buffer-fill absolute left-0 top-0 bg-base-content/20 rounded-full h-2 transition-all duration-300" style="width: 0%"></div>
+                    <div class="buffer-fill absolute left-0 top-0 bg-base-content/20 rounded-full h-2 transition-all duration-300 hidden" style="width: 0%"></div>
                     
                     <!-- Playback Progress Bar (front) -->
                     <progress class="progress-bar progress progress-primary w-full h-2 relative z-10" value="0" max="100"></progress>
